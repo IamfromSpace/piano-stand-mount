@@ -14,10 +14,18 @@ module mount(
   outer_radius = thickness + inner_radius;
   true_inner_radius = inner_radius + $tolerance/2;
 
-  module tube_clasp() {
+  module tube_clasp(is_rounded) {
     difference() {
-      translate([-outer_radius, 0, 0])
-        cube([outer_radius*2, outer_radius, depth]);
+      if (is_rounded) {
+        intersection() {
+          cylinder(depth, outer_radius, outer_radius);
+          translate([-outer_radius, 0, 0])
+            cube([outer_radius*2, outer_radius, depth]);
+        }
+      } else {
+        translate([-outer_radius, 0, 0])
+          cube([outer_radius*2, outer_radius, depth]);
+      }
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [0:1]) {
@@ -37,12 +45,12 @@ module mount(
   }
 
   if (component == "ALL" || component == "TOP_TUBE" || component == "BOTTOM_TUBE")
-    tube_clasp();
+    tube_clasp(component == "BOTTOM_TUBE");
 
   if (component == "ALL")
     translate([0, 0, depth])
       rotate([180, 0, 0])
-        tube_clasp();
+        tube_clasp(true);
 
   if (component == "ALL" || component == "TOP_TUBE") {
     translate([outer_radius,outer_radius,0])
