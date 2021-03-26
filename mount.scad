@@ -10,9 +10,13 @@ module mount(
   screw_offset,
   screw_radius,
   component = "ALL",
+  explode = 0, // only valid when "ALL" is selected
 ) {
   outer_radius = thickness + inner_radius;
   true_inner_radius = inner_radius + $tolerance/2;
+  effective_explode = component == "ALL"
+    ? explode
+    : 0;
 
   module tube_clasp(is_rounded) {
     difference() {
@@ -48,7 +52,7 @@ module mount(
     tube_clasp(component == "BOTTOM_TUBE");
 
   if (component == "ALL")
-    translate([0, 0, depth])
+    translate([0, 0, depth + effective_explode])
       rotate([180, 0, 0])
         tube_clasp(true);
 
@@ -63,7 +67,7 @@ module mount(
   }
 
   if (component == "ALL") {
-    translate([screw_distance - depth/2, inner_radius - thickness, 0])
+    translate([screw_distance - depth/2, inner_radius - thickness, effective_explode])
       mirror([0,1,0])
         rotate([90,0,0])
           full_screw_arm();
