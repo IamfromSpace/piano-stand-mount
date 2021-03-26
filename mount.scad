@@ -21,8 +21,8 @@ module mount(
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [0:1]) {
-        translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth/2])
-          cylinder((depth + $tolerance)/2, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
+        translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth/2-$tolerance/2])
+          cylinder(depth/2 + $tolerance, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
       }
     }
 
