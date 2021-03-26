@@ -29,7 +29,7 @@ module mount(
     for (i = [0:1]) {
       translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, 0])
         difference() {
-          cylinder(depth/2, pin_radius + thickness, pin_radius + thickness);
+          cylinder(depth/2 - $tolerance/2, pin_radius + thickness, pin_radius + thickness);
           translate([0,0,-$tolerance/2])
             cylinder(depth/2 + $tolerance, pin_radius + $tolerance/2, pin_radius + $tolerance/2);
         }
