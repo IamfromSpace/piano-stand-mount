@@ -36,8 +36,12 @@ module mount(
   translate([0, true_inner_radius, 0])
     cube([screw_distance - depth/2, thickness - $tolerance/2, depth]);
 
-  translate([screw_distance - depth/2 - thickness, inner_radius-thickness*2, 0])
-    cube([depth + thickness*2, thickness*3, depth]);
+  difference() {
+    translate([screw_distance - depth/2 - thickness, inner_radius-thickness*2, 0])
+      cube([depth + thickness*2, thickness*3, depth]);
+    translate([screw_distance - depth/2 - $tolerance/2, inner_radius - thickness - $tolerance/2, -$tolerance/2])
+      cube([depth + $tolerance, thickness + $tolerance, depth+$tolerance]);
+  }
 
   translate([screw_distance - depth/2, thickness + inner_radius, depth])
     rotate([90,0,0])
