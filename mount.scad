@@ -33,20 +33,29 @@ module mount(
       }
   }
 
-  translate([0, true_inner_radius, 0])
-    cube([screw_distance - depth/2, thickness - $tolerance/2, depth]);
-
-  difference() {
-    translate([screw_distance - depth/2 - thickness, inner_radius-thickness*2, 0])
-      cube([depth + thickness*2, thickness*3, depth]);
-    translate([screw_distance - depth/2 - $tolerance/2, inner_radius - thickness - $tolerance/2, -$tolerance/2])
-      cube([depth + $tolerance, thickness + $tolerance, depth+$tolerance]);
-  }
+  translate([outer_radius,outer_radius,0])
+    mirror([0,1,0])
+      box_arm(thickness, screw_distance - outer_radius, depth);
 
   translate([screw_distance - depth/2, inner_radius - thickness, 0])
     mirror([0,1,0])
       rotate([90,0,0])
         screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, 0.1*thickness);
+}
+
+module box_arm(
+  thickness,
+  length, // start of the arm to the center of the box
+  box_width,
+) {
+  cube([length, thickness - $tolerance/2, box_width]);
+
+  difference() {
+    translate([length - box_width/2 - thickness, 0, 0])
+      cube([box_width + thickness*2, thickness*3, box_width]);
+    translate([length - box_width/2 - $tolerance/2, thickness - $tolerance/2, -$tolerance/2])
+      cube([box_width + $tolerance, thickness + $tolerance, box_width+$tolerance]);
+  }
 }
 
 module screw_arm(
