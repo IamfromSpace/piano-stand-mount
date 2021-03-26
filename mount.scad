@@ -14,7 +14,7 @@ module mount(
   outer_radius = thickness + inner_radius;
   true_inner_radius = inner_radius + $tolerance/2;
 
-  if (component == "ALL" || component == "TOP_TUBE" || component == "BOTTOM_TUBE") {
+  module tube_clasp() {
     difference() {
       translate([-outer_radius, 0, 0])
         cube([outer_radius*2, outer_radius, depth]);
@@ -35,6 +35,14 @@ module mount(
         }
     }
   }
+
+  if (component == "ALL" || component == "TOP_TUBE" || component == "BOTTOM_TUBE")
+    tube_clasp();
+
+  if (component == "ALL")
+    translate([0, 0, depth])
+      rotate([180, 0, 0])
+        tube_clasp();
 
   if (component == "ALL" || component == "TOP_TUBE") {
     translate([outer_radius,outer_radius,0])
