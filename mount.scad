@@ -10,7 +10,7 @@ module mount(
   screw_offset,
   screw_radius,
   component = "ALL",
-  explode = 0, // only valid when "ALL" is selected
+  explode = 30, // only valid when "ALL" is selected
 ) {
   outer_radius = thickness + inner_radius;
   true_inner_radius = inner_radius + $tolerance/2;
