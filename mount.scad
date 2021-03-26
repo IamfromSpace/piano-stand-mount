@@ -9,38 +9,51 @@ module mount(
   screw_distance,
   screw_offset,
   screw_radius,
+  component = "ALL",
 ) {
   outer_radius = thickness + inner_radius;
   true_inner_radius = inner_radius + $tolerance/2;
 
-  difference() {
-    translate([-outer_radius, 0, 0])
-      cube([outer_radius*2, outer_radius, depth]);
-    translate([0, 0, -$tolerance/2])
-      cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
+  if (component == "ALL" || component == "TOP_TUBE" || component == "BOTTOM_TUBE") {
+    difference() {
+      translate([-outer_radius, 0, 0])
+        cube([outer_radius*2, outer_radius, depth]);
+      translate([0, 0, -$tolerance/2])
+        cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
+      for (i = [0:1]) {
+        translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth/2])
+          cylinder((depth + $tolerance)/2, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
+      }
+    }
+
     for (i = [0:1]) {
-      translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth/2])
-        cylinder((depth + $tolerance)/2, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
+      translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, 0])
+        difference() {
+          cylinder(depth/2, pin_radius + thickness, pin_radius + thickness);
+          translate([0,0,-$tolerance/2])
+            cylinder(depth/2 + $tolerance, pin_radius + $tolerance/2, pin_radius + $tolerance/2);
+        }
     }
   }
 
-  for (i = [0:1]) {
-    translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, 0])
-      difference() {
-        cylinder(depth/2, pin_radius + thickness, pin_radius + thickness);
-        translate([0,0,-$tolerance/2])
-          cylinder(depth/2 + $tolerance, pin_radius + $tolerance/2, pin_radius + $tolerance/2);
-      }
+  if (component == "ALL" || component == "TOP_TUBE") {
+    translate([outer_radius,outer_radius,0])
+      mirror([0,1,0])
+        box_arm(thickness, screw_distance - outer_radius, depth);
   }
 
-  translate([outer_radius,outer_radius,0])
-    mirror([0,1,0])
-      box_arm(thickness, screw_distance - outer_radius, depth);
+  module full_screw_arm() {
+    screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, 0.1*thickness);
+  }
 
-  translate([screw_distance - depth/2, inner_radius - thickness, 0])
-    mirror([0,1,0])
-      rotate([90,0,0])
-        screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, 0.1*thickness);
+  if (component == "ALL") {
+    translate([screw_distance - depth/2, inner_radius - thickness, 0])
+      mirror([0,1,0])
+        rotate([90,0,0])
+          full_screw_arm();
+  } else if (component == "SCREW_ARM") {
+    full_screw_arm();
+  }
 }
 
 module box_arm(
