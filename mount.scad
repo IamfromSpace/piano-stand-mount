@@ -43,18 +43,37 @@ module mount(
       cube([depth + $tolerance, thickness + $tolerance, depth+$tolerance]);
   }
 
-  translate([screw_distance - depth/2, thickness + inner_radius, depth])
-    rotate([90,0,0])
-      difference() {
-        union() {
-          translate([0, 0, thickness])
-            cube([depth, screw_offset, thickness]);
-          translate([depth/2, screw_offset, 0])
-            cylinder(thickness*2, depth/2, depth/2);
-        }
-        translate([depth/2, screw_offset, -$tolerance/2])
-          cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
-      }
+  translate([screw_distance - depth/2, inner_radius - thickness, 0])
+    mirror([0,1,0])
+      rotate([90,0,0])
+        screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, 0.1*thickness);
+}
+
+module screw_arm(
+  thickness,
+  length, // from the inside of the lip to the center of the screw hole
+  box_length, // How much the box will cover
+  width,
+  screw_radius,
+  bump_height
+) {
+  difference() {
+    union() {
+      cube([width, length, thickness]);
+      translate([0, -2*bump_height, 0])
+        cube([width, 2*bump_height, thickness]);
+      translate([0,-bump_height/2,0])
+        cylinder(thickness, bump_height, bump_height);
+      translate([width,-bump_height/2,0])
+        cylinder(thickness, bump_height, bump_height);
+      translate([0, box_length, 0])
+        cube([width, length-box_length, thickness*2]);
+      translate([width/2, length, 0])
+        cylinder(thickness*2, width/2, width/2);
+    }
+    translate([width/2, length, -$tolerance/2])
+      cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
+  }
 }
 
 mount(
