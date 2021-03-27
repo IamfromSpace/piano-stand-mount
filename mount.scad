@@ -81,11 +81,8 @@ module box_arm(
   length, // start of the arm to the center of the box
   box_width,
 ) {
-  cube([length, thickness - $tolerance/2, box_width]);
-
   difference() {
-    translate([length - box_width/2 - thickness, 0, 0])
-      cube([box_width + thickness*2, thickness*3, box_width]);
+    cube([length + box_width/2 + thickness, thickness*3, box_width]);
     translate([length - box_width/2 - $tolerance/2, thickness - $tolerance/2, -$tolerance/2])
       cube([box_width + $tolerance, thickness + $tolerance, box_width+$tolerance]);
   }
