@@ -10,6 +10,10 @@ module mount(
   screw_offset,
   screw_radius,
   top_bias,
+  slot_width,
+  slot_depth,
+  rail_width,
+  rail_depth,
   component = "ALL",
   explode = 30, // only valid when "ALL" is selected
 ) {
@@ -69,7 +73,7 @@ module mount(
   }
 
   module full_screw_arm() {
-    screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius);
+    screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, slot_width, slot_depth, rail_width, rail_depth);
   }
 
   if (component == "ALL") {
@@ -113,7 +117,11 @@ module screw_arm(
   length, // from the inside of the lip to the center of the screw hole
   box_length, // How much the box will cover
   width,
-  screw_radius
+  screw_radius,
+  slot_width,
+  slot_depth,
+  rail_width,
+  rail_depth,
 ) {
   difference() {
     union() {
@@ -122,13 +130,26 @@ module screw_arm(
         cube([width, 2*thickness, thickness]);
       translate([0, box_length, 0])
         cube([width, length-box_length, thickness*2]);
-      translate([width/2, length, 0])
-        cylinder(thickness*2, width/2, width/2);
+      translate([0, length - slot_width/2, 0])
+        cube([width, slot_width/2, thickness*2 + slot_depth - $tolerance]);
+      intersection() {
+        translate([width/2, length, 0])
+          cylinder(thickness*2 + slot_depth - $tolerance, width/2, width/2);
+        union() {
+          translate([0, length, 0])
+            cube([width, width/2, thickness*2]);
+          translate([0, length, 0])
+            cube([width, slot_width/2, thickness*2 + slot_depth - $tolerance]);
+        }
+      }
     }
     translate([thickness, -thickness, -$tolerance/2])
       cube([width - 2*thickness, thickness, thickness + $tolerance]);
-    translate([width/2, length, -$tolerance/2])
-      cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
+    translate([width/2, length,  -$tolerance/2])
+      cylinder(2 * thickness + slot_depth, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
+    for (i = [0:1])
+      translate([-$tolerance/2, (i*2-1)*(slot_width/2 + rail_width/2) + length - rail_width/2, 2*thickness - rail_depth + $tolerance/2])
+        cube([width + $tolerance, rail_width, rail_depth + $tolerance/2]);
   }
 }
 
@@ -151,6 +172,10 @@ mount(
   27.5,
   2.5,
   1/5,
+  22.5,
+  1.25,
+  1.25,
+  1.25,
   $fn=30,
   $tolerance=0.7
 );
