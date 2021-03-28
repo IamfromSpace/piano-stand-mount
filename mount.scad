@@ -124,14 +124,16 @@ module screw_arm(
   rail_depth,
 ) {
   difference() {
+    real_slot_width = slot_width - $tolerance;
+    real_rail_width = rail_width + $tolerance;
     union() {
       cube([width, length, thickness]);
       translate([0, -2*thickness, 0])
         cube([width, 2*thickness, thickness]);
       translate([0, box_length, 0])
         cube([width, length-box_length, thickness*2]);
-      translate([0, length - slot_width/2, 0])
-        cube([width, slot_width/2, thickness*2 + slot_depth - $tolerance]);
+      translate([0, length - real_slot_width/2, 0])
+        cube([width, real_slot_width/2, thickness*2 + slot_depth - $tolerance]);
       intersection() {
         translate([width/2, length, 0])
           cylinder(thickness*2 + slot_depth - $tolerance, width/2, width/2);
@@ -139,7 +141,7 @@ module screw_arm(
           translate([0, length, 0])
             cube([width, width/2, thickness*2]);
           translate([0, length, 0])
-            cube([width, slot_width/2, thickness*2 + slot_depth - $tolerance]);
+            cube([width, real_slot_width/2, thickness*2 + slot_depth - $tolerance]);
         }
       }
     }
@@ -148,8 +150,8 @@ module screw_arm(
     translate([width/2, length,  -$tolerance/2])
       cylinder(2 * thickness + slot_depth, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
     for (i = [0:1])
-      translate([-$tolerance/2, (i*2-1)*(slot_width/2 + rail_width/2) + length - rail_width/2, 2*thickness - rail_depth + $tolerance/2])
-        cube([width + $tolerance, rail_width, rail_depth + $tolerance/2]);
+      translate([-$tolerance/2, (i*2-1)*(real_slot_width/2 + real_rail_width/2) + length - real_rail_width/2, 2*thickness - rail_depth + $tolerance/2])
+        cube([width + $tolerance, real_rail_width, rail_depth + $tolerance/2]);
   }
 }
 
