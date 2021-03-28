@@ -153,5 +153,5 @@ mount(
   2,
   1/5,
   $fn=30,
-  $tolerance=0.6
+  $tolerance=0.7
 );
