@@ -74,6 +74,20 @@ module mount(
         box_arm(thickness, screw_distance - outer_radius, depth);
   }
 
+  module cantilever_full() {
+    simple_cantilever_set(depth + $tolerance, thickness - $tolerance, thickness, thickness/3, thickness - $tolerance);
+  }
+
+  if (component == "ALL")
+    for (i = [0:1])
+      translate([(i*2-1)*(outer_radius + 1.5*thickness + $tolerance) + 1.5*thickness - $tolerance/2, -thickness/2 + $tolerance/2, depth + $tolerance/2 - effective_explode])
+        rotate([-90, 0, 0])
+          rotate([0, 0, 90])
+            cantilever_full();
+
+  if (component == "CANTILEVER")
+    cantilever_full();
+
   module full_screw_arm() {
     screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, slot_width, slot_depth, rail_width, rail_depth);
   }
@@ -167,6 +181,37 @@ module square_pin(
     cube([width, depth + thickness, thickness]);
 }
 
+module simple_cantilever_arm(
+  depth, // how deep the arm will go
+  width, // how far the cantilever shape will be projected
+  thickness, // how thick the arm will be in the direction of deflection
+  overhang // how deep the grip will go
+) {
+  cube([depth, thickness, width]);
+  difference() {
+    translate([0, (thickness - overhang)/2, 0])
+      cylinder(width, (overhang + thickness)/2, (overhang + thickness)/2);
+    translate([0, -overhang, -$tolerance/2])
+      cube([depth, overhang, width + $tolerance]);
+  }
+}
+
+module simple_cantilever_set(
+  depth, // how deep the arm will go
+  width, // how far the cantilever shape will be projected
+  thickness, // how thick the arm will be in the direction of deflection
+  overhang, // how deep the grip will go
+  spacing, // gap between the two levers
+) {
+  translate([depth, -thickness])
+    cube([thickness, 4*thickness + spacing, width + thickness]);
+  simple_cantilever_arm(depth,width,thickness,overhang);
+  translate([0, 2*thickness + spacing, 0])
+    mirror([0,1,0])
+      simple_cantilever_arm(depth,width,thickness,overhang);
+}
+
+
 mount(
   25,
   8/3,
@@ -174,7 +219,7 @@ mount(
   45,
   27.5,
   2.5,
-  1/5,
+  1/2,
   22.5,
   1.25,
   1.25,
