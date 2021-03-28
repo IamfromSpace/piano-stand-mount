@@ -95,6 +95,8 @@ module box_arm(
 ) {
   difference() {
     cube([length + box_width/2 + thickness, thickness*3, box_width]);
+    translate([thickness, thickness, -$tolerance/2])
+      cube([length - box_width/2 - 2*thickness, thickness, box_width + $tolerance]);
     translate([length - box_width/2 - $tolerance/2, thickness - $tolerance/2, -$tolerance/2])
       cube([box_width + $tolerance, thickness + $tolerance, box_width+$tolerance]);
   }
