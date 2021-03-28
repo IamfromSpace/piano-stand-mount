@@ -5,7 +5,6 @@ module mount(
   depth,
   thickness,
   inner_radius,
-  pin_radius,
   screw_distance,
   screw_offset,
   screw_radius,
@@ -42,17 +41,18 @@ module mount(
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [0:1]) {
-        translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth * bias - $tolerance/2])
-          cylinder(depth * opposite_bias + $tolerance, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
+        translate([(i*2-1) * (5*thickness/2 + inner_radius + $tolerance) - 5*thickness/2 - $tolerance/2, -3*thickness/2 - $tolerance/2, depth * bias - $tolerance/2])
+          cube([5*thickness + $tolerance, 3*thickness + $tolerance, depth * opposite_bias + $tolerance]);
       }
     }
 
     for (i = [0:1]) {
-      translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, 0])
+      translate([(i*2-1) * (5*thickness/2 + inner_radius + $tolerance), 0, 0])
         difference() {
-          cylinder(depth * bias - $tolerance/2, pin_radius + thickness, pin_radius + thickness);
-          translate([0,0,-$tolerance/2])
-            cylinder(depth * bias + $tolerance, pin_radius + $tolerance/2, pin_radius + $tolerance/2);
+          translate([-5*thickness/2, -3*thickness/2, 0])
+            cube([5*thickness, 3*thickness, depth * bias - $tolerance/2]);
+          translate([-3*thickness/2, -thickness/2, -$tolerance/2])
+            cube([3*thickness, thickness, depth * bias + $tolerance]);
         }
     }
   }
@@ -171,7 +171,6 @@ mount(
   25,
   8/3,
   15,
-  3,
   45,
   27.5,
   2.5,
