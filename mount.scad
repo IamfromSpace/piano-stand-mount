@@ -74,6 +74,18 @@ module mount(
   } else if (component == "SCREW_ARM") {
     full_screw_arm();
   }
+
+  module full_screw_arm_pin() {
+    square_pin(thickness - $tolerance, depth - 2*thickness - $tolerance, 2*thickness);
+  }
+
+  if (component == "ALL")
+    translate([screw_distance - depth/2 + $tolerance, outer_radius + effective_explode, -$tolerance/2])
+      rotate([180, 0, 0])
+        full_screw_arm_pin();
+
+  if (component == "SCREW_ARM_PIN")
+    full_screw_arm_pin();
 }
 
 module box_arm(
@@ -99,20 +111,28 @@ module screw_arm(
   difference() {
     union() {
       cube([width, length, thickness]);
-      translate([0, -2*bump_height, 0])
-        cube([width, 2*bump_height, thickness]);
-      translate([0,-bump_height/2,0])
-        cylinder(thickness, bump_height, bump_height);
-      translate([width,-bump_height/2,0])
-        cylinder(thickness, bump_height, bump_height);
+      translate([0, -2*thickness, 0])
+        cube([width, 2*thickness, thickness]);
       translate([0, box_length, 0])
         cube([width, length-box_length, thickness*2]);
       translate([width/2, length, 0])
         cylinder(thickness*2, width/2, width/2);
     }
+    translate([thickness, -thickness, -$tolerance/2])
+      cube([width - 2*thickness, thickness, thickness + $tolerance]);
     translate([width/2, length, -$tolerance/2])
       cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
   }
+}
+
+module square_pin(
+  thickness,
+  width,
+  depth
+) {
+  cube([width + 2*thickness, thickness, thickness,]);
+  translate([thickness, 0, 0])
+    cube([width, depth + thickness, thickness]);
 }
 
 mount(
