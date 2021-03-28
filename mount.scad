@@ -69,7 +69,7 @@ module mount(
   }
 
   module full_screw_arm() {
-    screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, 0.1*thickness);
+    screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius);
   }
 
   if (component == "ALL") {
@@ -113,8 +113,7 @@ module screw_arm(
   length, // from the inside of the lip to the center of the screw hole
   box_length, // How much the box will cover
   width,
-  screw_radius,
-  bump_height
+  screw_radius
 ) {
   difference() {
     union() {
