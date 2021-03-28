@@ -9,6 +9,7 @@ module mount(
   screw_distance,
   screw_offset,
   screw_radius,
+  top_bias,
   component = "ALL",
   explode = 30, // only valid when "ALL" is selected
 ) {
@@ -17,8 +18,10 @@ module mount(
   effective_explode = component == "ALL"
     ? explode
     : 0;
+  bottom_bias = 1 - top_bias;
 
-  module tube_clasp(is_rounded) {
+  module tube_clasp(bias, is_rounded) {
+    opposite_bias = 1 - bias;
     difference() {
       if (is_rounded) {
         intersection() {
@@ -33,28 +36,31 @@ module mount(
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [0:1]) {
-        translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth/2-$tolerance/2])
-          cylinder(depth/2 + $tolerance, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
+        translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, depth * bias - $tolerance/2])
+          cylinder(depth * opposite_bias + $tolerance, pin_radius + thickness + $tolerance/2, pin_radius + thickness + $tolerance/2);
       }
     }
 
     for (i = [0:1]) {
       translate([(i*2-1) * (pin_radius + thickness + inner_radius + $tolerance), 0, 0])
         difference() {
-          cylinder(depth/2 - $tolerance/2, pin_radius + thickness, pin_radius + thickness);
+          cylinder(depth * bias - $tolerance/2, pin_radius + thickness, pin_radius + thickness);
           translate([0,0,-$tolerance/2])
-            cylinder(depth/2 + $tolerance, pin_radius + $tolerance/2, pin_radius + $tolerance/2);
+            cylinder(depth * bias + $tolerance, pin_radius + $tolerance/2, pin_radius + $tolerance/2);
         }
     }
   }
 
-  if (component == "ALL" || component == "TOP_TUBE" || component == "BOTTOM_TUBE")
-    tube_clasp(component == "BOTTOM_TUBE");
+  if (component == "ALL" || component == "TOP_TUBE")
+    tube_clasp(top_bias, false);
+
+  if (component == "BOTTOM_TUBE")
+    tube_clasp(bottom_bias, true);
 
   if (component == "ALL")
     translate([0, 0, depth + effective_explode])
       rotate([180, 0, 0])
-        tube_clasp(true);
+        tube_clasp(bottom_bias, true);
 
   if (component == "ALL" || component == "TOP_TUBE") {
     translate([outer_radius,outer_radius,0])
@@ -145,6 +151,7 @@ mount(
   45,
   27.5,
   2,
+  1/5,
   $fn=30,
   $tolerance=0.6
 );
