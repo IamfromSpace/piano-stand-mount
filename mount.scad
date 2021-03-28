@@ -15,12 +15,14 @@ module mount(
   rail_width,
   rail_depth,
   component = "ALL",
-  explode = 30, // only valid when "ALL" is selected
+  explode, // only valid when "ALL" is selected
 ) {
   outer_radius = thickness + inner_radius;
   true_inner_radius = inner_radius + $tolerance/2;
   effective_explode = component == "ALL"
-    ? explode
+    ? explode == undef
+      ? depth + thickness * 2 + 5
+      : explode
     : 0;
   bottom_bias = 1 - top_bias;
 
