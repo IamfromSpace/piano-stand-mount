@@ -28,32 +28,25 @@ module mount(
   module tube_clasp(bias, is_rounded) {
     opposite_bias = 1 - bias;
     difference() {
-      if (is_rounded) {
-        intersection() {
-          cylinder(depth, outer_radius, outer_radius);
+      union() {
+        if (is_rounded) {
+          intersection() {
+            cylinder(depth, outer_radius, outer_radius);
+            translate([-outer_radius, 0, 0])
+              cube([outer_radius*2, outer_radius, depth]);
+          }
+        } else {
           translate([-outer_radius, 0, 0])
             cube([outer_radius*2, outer_radius, depth]);
         }
-      } else {
-        translate([-outer_radius, 0, 0])
-          cube([outer_radius*2, outer_radius, depth]);
+        translate([-outer_radius - 2*thickness, 0, 0])
+          cube([4*thickness + outer_radius*2, outer_radius - 4*thickness - $tolerance, (depth + 5*thickness)/2]);
       }
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
-      for (i = [0:1]) {
-        translate([(i*2-1) * (5*thickness/2 + inner_radius + $tolerance) - 5*thickness/2 - $tolerance/2, -3*thickness/2 - $tolerance/2, depth * bias - $tolerance/2])
-          cube([5*thickness + $tolerance, 3*thickness + $tolerance, depth * opposite_bias + $tolerance]);
-      }
-    }
-
-    for (i = [0:1]) {
-      translate([(i*2-1) * (5*thickness/2 + inner_radius + $tolerance), 0, 0])
-        difference() {
-          translate([-5*thickness/2, -3*thickness/2, 0])
-            cube([5*thickness, 3*thickness, depth * bias - $tolerance/2]);
-          translate([-3*thickness/2, -thickness/2, -$tolerance/2])
-            cube([3*thickness, thickness, depth * bias + $tolerance]);
-        }
+      for (i = [0:1])
+        translate([(i*2-1) * (outer_radius + (thickness + $tolerance)/2) - (thickness + $tolerance)/2, 0, (depth - 3*thickness - $tolerance)/2])
+          cube([thickness + $tolerance, outer_radius - 4*thickness - $tolerance, 3*thickness + $tolerance]);
     }
   }
 
@@ -75,15 +68,16 @@ module mount(
   }
 
   module cantilever_full() {
-    simple_cantilever_set(depth + $tolerance, thickness - $tolerance, thickness, thickness/3, thickness - $tolerance);
+    simple_cantilever_set(2*outer_radius - 8*thickness - $tolerance, thickness - $tolerance, thickness, thickness/3, thickness - $tolerance);
   }
 
   if (component == "ALL")
     for (i = [0:1])
-      translate([(i*2-1)*(outer_radius + 1.5*thickness + $tolerance) + 1.5*thickness - $tolerance/2, -thickness/2 + $tolerance/2, depth + $tolerance/2 - effective_explode])
-        rotate([-90, 0, 0])
-          rotate([0, 0, 90])
-            cantilever_full();
+      translate([(2*i-1)*-outer_radius, outer_radius - 4*thickness - $tolerance/2 - effective_explode, depth/2 + 3*thickness/2 -$tolerance/2])
+        mirror([i, 0, 0])
+          rotate([0, 90, 0])
+            rotate([0, 0, -90])
+              cantilever_full();
 
   if (component == "CANTILEVER")
     cantilever_full();
