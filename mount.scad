@@ -40,13 +40,13 @@ module mount(
             cube([outer_radius*2, outer_radius, depth]);
         }
         translate([-outer_radius - 2*thickness, 0, 0])
-          cube([4*thickness + outer_radius*2, outer_radius - 4*thickness - $tolerance, (depth + 5*thickness)/2]);
+          cube([4*thickness + outer_radius*2, outer_radius - 4*thickness - $tolerance, depth/2 + 3*thickness]);
       }
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [0:1])
-        translate([(i*2-1) * (outer_radius + (thickness + $tolerance)/2) - (thickness + $tolerance)/2, 0, (depth - 3*thickness - $tolerance)/2])
-          cube([thickness + $tolerance, outer_radius - 4*thickness - $tolerance, 3*thickness + $tolerance]);
+        translate([(i*2-1) * (outer_radius + (thickness + $tolerance)/2) - (thickness + $tolerance)/2, 0, (depth - 4*thickness - $tolerance)/2])
+          cube([thickness + $tolerance, outer_radius - 4*thickness - $tolerance, 4*thickness + $tolerance]);
     }
   }
 
@@ -68,12 +68,12 @@ module mount(
   }
 
   module cantilever_full() {
-    simple_cantilever_set(2*outer_radius - 8*thickness - $tolerance, thickness - $tolerance, thickness, thickness/3, thickness - $tolerance);
+    simple_cantilever_set(2*outer_radius - 8*thickness - $tolerance, thickness - $tolerance, thickness, 2*thickness/3, 2*thickness - $tolerance);
   }
 
   if (component == "ALL")
     for (i = [0:1])
-      translate([(2*i-1)*-outer_radius, outer_radius - 4*thickness - $tolerance/2 - effective_explode, depth/2 + 3*thickness/2 -$tolerance/2])
+      translate([(2*i-1)*-outer_radius, outer_radius - 4*thickness - $tolerance/2 - effective_explode, depth/2 + 2*thickness -$tolerance/2])
         mirror([i, 0, 0])
           rotate([0, 90, 0])
             rotate([0, 0, -90])
