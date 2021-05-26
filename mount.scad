@@ -57,7 +57,7 @@ module mount(
     tube_clasp(bottom_bias, true);
 
   if (component == "ALL")
-    translate([0, 0, depth + effective_explode])
+    translate([0, -effective_explode, depth])
       rotate([180, 0, 0])
         tube_clasp(bottom_bias, true);
 
@@ -67,7 +67,7 @@ module mount(
 
   if (component == "ALL")
     for (i = [0:1])
-      translate([(2*i-1)*-outer_radius, outer_radius - 4*thickness - $tolerance/2 - effective_explode, depth/2 + 2*thickness -$tolerance/2])
+      translate([(2*i-1)*-outer_radius, outer_radius - 4*thickness - $tolerance/2 - 2 * effective_explode, depth/2 + 2*thickness -$tolerance/2])
         mirror([i, 0, 0])
           rotate([0, 90, 0])
             rotate([0, 0, -90])
