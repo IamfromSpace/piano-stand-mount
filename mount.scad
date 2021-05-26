@@ -61,12 +61,6 @@ module mount(
       rotate([180, 0, 0])
         tube_clasp(bottom_bias, true);
 
-  if (component == "ALL" || component == "TOP_TUBE") {
-    translate([outer_radius,outer_radius,0])
-      mirror([0,1,0])
-        box_arm(thickness, screw_distance - outer_radius, depth);
-  }
-
   module cantilever_full() {
     simple_cantilever_set(2*outer_radius - 8*thickness - $tolerance, thickness - $tolerance, thickness, 2*thickness/3, 2*thickness - $tolerance);
   }
@@ -82,97 +76,27 @@ module mount(
   if (component == "CANTILEVER")
     cantilever_full();
 
-  module full_screw_arm() {
-    screw_arm(thickness, depth + screw_offset, depth + $tolerance, depth, screw_radius, slot_width, slot_depth, rail_width, rail_depth);
-  }
-
-  if (component == "ALL") {
-    translate([screw_distance - depth/2, inner_radius - thickness, effective_explode])
-      mirror([0,1,0])
-        rotate([90,0,0])
-          full_screw_arm();
-  } else if (component == "SCREW_ARM") {
-    full_screw_arm();
-  }
-
-  module full_screw_arm_pin() {
-    square_pin(thickness - $tolerance, depth - 2*thickness - $tolerance, 2*thickness);
-  }
-
-  if (component == "ALL")
-    translate([screw_distance - depth/2 + $tolerance, outer_radius + effective_explode, -$tolerance/2])
-      rotate([180, 0, 0])
-        full_screw_arm_pin();
-
-  if (component == "SCREW_ARM_PIN")
-    full_screw_arm_pin();
-}
-
-module box_arm(
-  thickness,
-  length, // start of the arm to the center of the box
-  box_width,
-) {
+  translate([outer_radius, true_inner_radius+thickness-$tolerance/2, screw_offset + depth])
+  rotate([90, 0, 0])
   difference() {
-    cube([length + box_width/2 + thickness, thickness*3, box_width]);
-    translate([thickness, thickness, -$tolerance/2])
-      cube([length - box_width/2 - 2*thickness, thickness, box_width + $tolerance]);
-    translate([length - box_width/2 - $tolerance/2, thickness - $tolerance/2, -$tolerance/2])
-      cube([box_width + $tolerance, thickness + $tolerance, box_width+$tolerance]);
-  }
-}
-
-module screw_arm(
-  thickness,
-  length, // from the inside of the lip to the center of the screw hole
-  box_length, // How much the box will cover
-  width,
-  screw_radius,
-  slot_width,
-  slot_depth,
-  rail_width,
-  rail_depth,
-) {
-  difference() {
-    real_slot_width = slot_width - $tolerance;
-    real_rail_width = rail_width + $tolerance;
     union() {
-      cube([width, length, thickness]);
-      translate([0, -2*thickness, 0])
-        cube([width, 2*thickness, thickness]);
-      translate([0, box_length, 0])
-        cube([width, length-box_length, thickness*2]);
-      translate([0, length - real_slot_width/2, 0])
-        cube([width, real_slot_width/2, thickness*2 + slot_depth - $tolerance]);
       intersection() {
-        translate([width/2, length, 0])
-          cylinder(thickness*2 + slot_depth - $tolerance, width/2, width/2);
-        union() {
-          translate([0, length, 0])
-            cube([width, width/2, thickness*2]);
-          translate([0, length, 0])
-            cube([width, real_slot_width/2, thickness*2 + slot_depth - $tolerance]);
+        translate([0, -screw_offset-depth, 0])
+          cube([screw_distance + depth/2 - outer_radius, screw_offset + depth, 2*thickness - $tolerance/2]);
+        difference() {
+          scale([screw_distance + depth/2 - outer_radius, screw_offset + depth, 1])
+            cylinder(2*thickness - $tolerance/2, 1, 1);
+          translate([0, 0, -$tolerance/4])
+            scale([screw_distance - depth/2 - outer_radius, screw_offset, 1])
+              cylinder(2*thickness, 1, 1);
         }
       }
+      translate([screw_distance - outer_radius, 0, 0])
+        cylinder(2*thickness - $tolerance/2, depth/2, depth/2);
     }
-    translate([thickness, -thickness, -$tolerance/2])
-      cube([width - 2*thickness, thickness, thickness + $tolerance]);
-    translate([width/2, length,  -$tolerance/2])
-      cylinder(2 * thickness + slot_depth, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
-    for (i = [0:1])
-      translate([-$tolerance/2, (i*2-1)*(real_slot_width/2 + real_rail_width/2) + length - real_rail_width/2, 2*thickness - rail_depth + $tolerance/2])
-        cube([width + $tolerance, real_rail_width, rail_depth + $tolerance/2]);
+    translate([screw_distance - outer_radius, 0, -$tolerance/2])
+      cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
   }
-}
-
-module square_pin(
-  thickness,
-  width,
-  depth
-) {
-  cube([width + 2*thickness, thickness, thickness,]);
-  translate([thickness, 0, 0])
-    cube([width, depth + thickness, thickness]);
 }
 
 module simple_cantilever_arm(
