@@ -76,6 +76,7 @@ module mount(
   if (component == "CANTILEVER")
     cantilever_full();
 
+  if (component == "ALL" || component == "TOP_TUBE")
   translate([outer_radius, true_inner_radius+thickness-$tolerance/2, screw_offset + depth])
   rotate([90, 0, 0])
   difference() {
