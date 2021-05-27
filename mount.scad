@@ -8,10 +8,6 @@ module mount(
   screw_distance,
   screw_offset,
   screw_radius,
-  slot_width,
-  slot_depth,
-  rail_width,
-  rail_depth,
   component = "ALL",
   explode, // only valid when "ALL" is selected
 ) {
@@ -88,10 +84,6 @@ mount(
   45,
   27.5,
   2.5,
-  22.5,
-  1.25,
-  1.25,
-  1.25,
   $fn=30,
   $tolerance=0.7
 );
