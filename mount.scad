@@ -26,9 +26,6 @@ module mount(
   bottom_bias = 1 - top_bias;
 
   screw_shaft_radius = 3/2;
-  // TODO: We need to print flat, so this can't actually be dynamic, it needs
-  // to extand the whole length
-  screw_depth = 20;
 
   module tube_clasp(bias) {
     opposite_bias = 1 - bias;
@@ -39,7 +36,7 @@ module mount(
         for (i = [-1,1]) {
           translate([i*(thickness + inner_radius + screw_shaft_radius), 0, depth/2])
             rotate([270, 0, 0])
-              cylinder(screw_depth/2, thickness + screw_shaft_radius, thickness + screw_shaft_radius);
+              cylinder(outer_radius, thickness + screw_shaft_radius, thickness + screw_shaft_radius);
         }
       }
       translate([0, 0, -$tolerance/2])
@@ -47,7 +44,7 @@ module mount(
       for (i = [-1,1])
         translate([i * (inner_radius + thickness + screw_shaft_radius), 0, depth/2])
           rotate([-90, 0, 0])
-            cylinder(screw_depth/2, screw_shaft_radius, screw_shaft_radius);
+            cylinder(outer_radius, screw_shaft_radius, screw_shaft_radius);
     }
   }
 
