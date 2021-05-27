@@ -8,7 +8,6 @@ module mount(
   screw_distance,
   screw_offset,
   screw_radius,
-  top_bias,
   slot_width,
   slot_depth,
   rail_width,
@@ -23,12 +22,10 @@ module mount(
       ? depth + thickness * 2 + 5
       : explode
     : 0;
-  bottom_bias = 1 - top_bias;
 
   screw_shaft_radius = 3/2;
 
-  module tube_clasp(bias) {
-    opposite_bias = 1 - bias;
+  module tube_clasp() {
     difference() {
       union() {
         translate([-outer_radius, 0, 0])
@@ -49,15 +46,15 @@ module mount(
   }
 
   if (component == "ALL" || component == "TOP_TUBE")
-    tube_clasp(top_bias);
+    tube_clasp();
 
   if (component == "BOTTOM_TUBE")
-    tube_clasp(bottom_bias);
+    tube_clasp();
 
   if (component == "ALL")
     translate([0, -effective_explode, depth])
       rotate([180, 0, 0])
-        tube_clasp(bottom_bias);
+        tube_clasp();
 
   if (component == "ALL" || component == "TOP_TUBE")
   translate([outer_radius, true_inner_radius+thickness-$tolerance/2, screw_offset + depth])
@@ -90,7 +87,6 @@ mount(
   45,
   27.5,
   2.5,
-  1/2,
   22.5,
   1.25,
   1.25,
