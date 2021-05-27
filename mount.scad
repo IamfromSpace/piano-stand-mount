@@ -25,21 +25,39 @@ module mount(
     : 0;
   bottom_bias = 1 - top_bias;
 
+  screw_shaft_radius = 3/2;
+  // TODO: We need to print flat, so this can't actually be dynamic, it needs
+  // to extand the whole length
+  screw_depth = 20;
+
+  // TODO: We need to print flat, so the bottom can no longer be rounded, this
+  // will also connect the crew holes completely to the tube clasp
   module tube_clasp(bias, is_rounded) {
     opposite_bias = 1 - bias;
     difference() {
-      if (is_rounded) {
-        intersection() {
-          cylinder(depth, outer_radius, outer_radius);
+      union() {
+        if (is_rounded) {
+          intersection() {
+            cylinder(depth, outer_radius, outer_radius);
+            translate([-outer_radius, 0, 0])
+              cube([outer_radius*2, outer_radius, depth]);
+          }
+        } else {
           translate([-outer_radius, 0, 0])
             cube([outer_radius*2, outer_radius, depth]);
         }
-      } else {
-        translate([-outer_radius, 0, 0])
-          cube([outer_radius*2, outer_radius, depth]);
+        for (i = [-1,1]) {
+          translate([i*(thickness + inner_radius + screw_shaft_radius), 0, depth/2])
+            rotate([270, 0, 0])
+              cylinder(screw_depth/2, thickness + screw_shaft_radius, thickness + screw_shaft_radius);
+        }
       }
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
+      for (i = [-1,1])
+        translate([i * (inner_radius + thickness + screw_shaft_radius), 0, depth/2])
+          rotate([-90, 0, 0])
+            cylinder(screw_depth/2, screw_shaft_radius, screw_shaft_radius);
     }
   }
 
