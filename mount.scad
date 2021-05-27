@@ -8,6 +8,7 @@ module mount(
   screw_distance,
   screw_offset,
   screw_radius,
+  clasp_screw_shaft_radius,
   component = "ALL",
   explode, // only valid when "ALL" is selected
 ) {
@@ -18,8 +19,6 @@ module mount(
       ? depth + thickness * 2 + 5
       : explode
     : 0;
-
-  screw_shaft_radius = 3/2;
 
   module tube_clasp(has_arm) {
     difference() {
@@ -50,17 +49,17 @@ module mount(
         translate([-outer_radius, 0, 0])
           cube([outer_radius*2, outer_radius, depth]);
         for (i = [-1,1]) {
-          translate([i*(thickness + inner_radius + screw_shaft_radius), 0, depth/2])
+          translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), 0, depth/2])
             rotate([270, 0, 0])
-              cylinder(outer_radius, thickness + screw_shaft_radius, thickness + screw_shaft_radius);
+              cylinder(outer_radius, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius);
         }
       }
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [-1,1])
-        translate([i * (inner_radius + thickness + screw_shaft_radius), 0, depth/2])
+        translate([i * (inner_radius + thickness + clasp_screw_shaft_radius), 0, depth/2])
           rotate([-90, 0, 0])
-            cylinder(outer_radius, screw_shaft_radius, screw_shaft_radius);
+            cylinder(outer_radius, clasp_screw_shaft_radius, clasp_screw_shaft_radius);
     }
   }
 
@@ -84,6 +83,7 @@ mount(
   45,
   27.5,
   2.5,
+  3/2-0.05,
   $fn=30,
   $tolerance=0.7
 );
