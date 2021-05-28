@@ -52,6 +52,10 @@ module mount(
           translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), 0, depth/2])
             rotate([270, 0, 0])
               cylinder(outer_radius, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius);
+          if (!has_arm)
+            translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), outer_radius - thickness, depth/2])
+              rotate([270, 0, 0])
+                cylinder(thickness, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius + thickness);
         }
       }
       translate([0, 0, -$tolerance/2])
