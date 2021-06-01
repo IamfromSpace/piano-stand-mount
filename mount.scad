@@ -99,7 +99,7 @@ mount(
   45,
   27.5,
   2.5,
-  2.45,
+  2.2, // TODO: Ideally this is affected by $tolerance in a reliable way??
   5,
   $fn=30,
   $tolerance=0.7
