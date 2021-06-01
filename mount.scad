@@ -8,7 +8,7 @@ module mount(
   screw_distance,
   screw_offset,
   screw_radius,
-  clasp_screw_shaft_radius,
+  clasp_screw_minor_radius,
   clasp_screw_inset,
   component = "ALL",
   explode, // only valid when "ALL" is selected
@@ -50,30 +50,30 @@ module mount(
         translate([-outer_radius, 0, 0])
           cube([outer_radius*2, outer_radius, depth]);
         for (i = [-1,1]) {
-          translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), 0, depth/2])
+          translate([i*(thickness + inner_radius + clasp_screw_minor_radius), 0, depth/2])
             rotate([270, 0, 0])
-              cylinder(outer_radius, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius);
+              cylinder(outer_radius, thickness + clasp_screw_minor_radius, thickness + clasp_screw_minor_radius);
           if (!has_arm)
-            translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
+            translate([i*(thickness + inner_radius + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
               rotate([270, 0, 0]) {
                 translate([0, 0, thickness])
-                  cylinder(clasp_screw_inset, thickness + clasp_screw_shaft_radius + thickness, thickness + clasp_screw_shaft_radius + thickness);
-                cylinder(thickness, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius + thickness);
+                  cylinder(clasp_screw_inset, thickness + clasp_screw_minor_radius + thickness, thickness + clasp_screw_minor_radius + thickness);
+                cylinder(thickness, thickness + clasp_screw_minor_radius, thickness + clasp_screw_minor_radius + thickness);
               }
         }
       }
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [-1,1]) {
-        translate([i * (inner_radius + thickness + clasp_screw_shaft_radius), 0, depth/2])
+        translate([i * (inner_radius + thickness + clasp_screw_minor_radius), 0, depth/2])
           rotate([-90, 0, 0])
-            cylinder(outer_radius, clasp_screw_shaft_radius, clasp_screw_shaft_radius);
+            cylinder(outer_radius, clasp_screw_minor_radius, clasp_screw_minor_radius);
         if (!has_arm)
-          translate([i * (inner_radius + thickness + clasp_screw_shaft_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
+          translate([i * (inner_radius + thickness + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
             rotate([270, 0, 0]) {
               translate([0, 0, thickness])
-                cylinder(clasp_screw_inset, clasp_screw_shaft_radius + thickness, clasp_screw_shaft_radius + thickness);
-              cylinder(thickness, clasp_screw_shaft_radius, clasp_screw_shaft_radius + thickness);
+                cylinder(clasp_screw_inset, clasp_screw_minor_radius + thickness, clasp_screw_minor_radius + thickness);
+              cylinder(thickness, clasp_screw_minor_radius, clasp_screw_minor_radius + thickness);
             }
       }
     }
@@ -99,7 +99,7 @@ module sided_mount(
   thickness,
   inner_radius,
   screw_radius,
-  clasp_screw_shaft_radius,
+  clasp_screw_minor_radius,
   clasp_screw_inset,
   component = "LEFT",
   explode
@@ -125,7 +125,7 @@ module sided_mount(
     is_left ? 96 : 45,
     is_left ? 54 : 27.5,
     screw_radius,
-    clasp_screw_shaft_radius,
+    clasp_screw_minor_radius,
     clasp_screw_inset,
     subcomponent,
     explode
