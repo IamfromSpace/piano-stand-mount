@@ -92,12 +92,50 @@ module mount(
 
 }
 
-mount(
+
+
+module sided_mount(
+  depth,
+  thickness,
+  inner_radius,
+  screw_radius,
+  clasp_screw_shaft_radius,
+  clasp_screw_inset,
+  component = "LEFT",
+  explode
+) {
+  is_left =
+    component == "LEFT_TOP_TUBE" ||
+    component == "LEFT_BOTTOM_TUBE" ||
+    component == "LEFT";
+
+  subcomponent =
+    component == "LEFT" || component == "RIGHT"
+      ? "ALL" :
+    component == "LEFT_TOP_TUBE" || component == "RIGHT_TOP_TUBE"
+      ?  "TOP_TUBE" :
+    component == "LEFT_BOTTOM_TUBE" || component == "RIGHT_BOTTOM_TUBE"
+      ? "BOTTOM_TUBE"
+      : component;
+
+  mount(
+    depth,
+    thickness,
+    inner_radius,
+    is_left ? 96 : 45,
+    is_left ? 54 : 27.5,
+    screw_radius,
+    clasp_screw_shaft_radius,
+    clasp_screw_inset,
+    subcomponent,
+    explode
+  );
+}
+
+sided_mount(
   25,
   8/3,
   15,
-  45,
-  27.5,
   2.5,
   2.2, // TODO: Ideally this is affected by $tolerance in a reliable way??
   5,
