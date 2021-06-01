@@ -9,6 +9,7 @@ module mount(
   screw_offset,
   screw_radius,
   clasp_screw_minor_radius,
+  clasp_screw_major_radius,
   clasp_screw_inset,
   component = "ALL",
   explode, // only valid when "ALL" is selected
@@ -22,6 +23,14 @@ module mount(
     : 0;
 
   module tube_clasp(has_arm) {
+    // TODO: Currently the distance between screws is set based on the minor
+    // radius, but this means that the cutouts for the major radius leave less
+    // that one thickness worth of material.  Instead, distances would be set
+    // to the _major_ radius.
+    clasp_screw_radius = has_arm
+      ? clasp_screw_minor_radius
+      : clasp_screw_major_radius;
+
     difference() {
       union() {
         if (has_arm)
@@ -52,13 +61,13 @@ module mount(
         for (i = [-1,1]) {
           translate([i*(thickness + inner_radius + clasp_screw_minor_radius), 0, depth/2])
             rotate([270, 0, 0])
-              cylinder(outer_radius, thickness + clasp_screw_minor_radius, thickness + clasp_screw_minor_radius);
+              cylinder(outer_radius, thickness + clasp_screw_radius, thickness + clasp_screw_radius);
           if (!has_arm)
             translate([i*(thickness + inner_radius + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
               rotate([270, 0, 0]) {
                 translate([0, 0, thickness])
-                  cylinder(clasp_screw_inset, thickness + clasp_screw_minor_radius + thickness, thickness + clasp_screw_minor_radius + thickness);
-                cylinder(thickness, thickness + clasp_screw_minor_radius, thickness + clasp_screw_minor_radius + thickness);
+                  cylinder(clasp_screw_inset, thickness + clasp_screw_radius + thickness, thickness + clasp_screw_radius + thickness);
+                cylinder(thickness, thickness + clasp_screw_radius, thickness + clasp_screw_radius + thickness);
               }
         }
       }
@@ -67,13 +76,13 @@ module mount(
       for (i = [-1,1]) {
         translate([i * (inner_radius + thickness + clasp_screw_minor_radius), 0, depth/2])
           rotate([-90, 0, 0])
-            cylinder(outer_radius, clasp_screw_minor_radius, clasp_screw_minor_radius);
+            cylinder(outer_radius, clasp_screw_radius, clasp_screw_radius);
         if (!has_arm)
           translate([i * (inner_radius + thickness + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
             rotate([270, 0, 0]) {
               translate([0, 0, thickness])
-                cylinder(clasp_screw_inset, clasp_screw_minor_radius + thickness, clasp_screw_minor_radius + thickness);
-              cylinder(thickness, clasp_screw_minor_radius, clasp_screw_minor_radius + thickness);
+                cylinder(clasp_screw_inset, clasp_screw_radius + thickness, clasp_screw_radius + thickness);
+              cylinder(thickness, clasp_screw_radius, clasp_screw_radius + thickness);
             }
       }
     }
@@ -100,6 +109,7 @@ module sided_mount(
   inner_radius,
   screw_radius,
   clasp_screw_minor_radius,
+  clasp_screw_major_radius,
   clasp_screw_inset,
   component = "LEFT",
   explode
@@ -126,6 +136,7 @@ module sided_mount(
     is_left ? 54 : 27.5,
     screw_radius,
     clasp_screw_minor_radius,
+    clasp_screw_major_radius,
     clasp_screw_inset,
     subcomponent,
     explode
@@ -138,6 +149,7 @@ sided_mount(
   15,
   2.5,
   2.2, // TODO: Ideally this is affected by $tolerance in a reliable way??
+  2.55,
   5,
   $fn=30,
   $tolerance=0.7
