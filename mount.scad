@@ -9,7 +9,7 @@ module mount(
   screw_offset,
   screw_radius,
   clasp_screw_shaft_radius,
-  clasp_screw_offset,
+  clasp_screw_inset,
   component = "ALL",
   explode, // only valid when "ALL" is selected
 ) {
@@ -54,10 +54,10 @@ module mount(
             rotate([270, 0, 0])
               cylinder(outer_radius, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius);
           if (!has_arm)
-            translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), outer_radius - thickness - clasp_screw_offset, depth/2])
+            translate([i*(thickness + inner_radius + clasp_screw_shaft_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
               rotate([270, 0, 0]) {
                 translate([0, 0, thickness])
-                  cylinder(clasp_screw_offset, thickness + clasp_screw_shaft_radius + thickness, thickness + clasp_screw_shaft_radius + thickness);
+                  cylinder(clasp_screw_inset, thickness + clasp_screw_shaft_radius + thickness, thickness + clasp_screw_shaft_radius + thickness);
                 cylinder(thickness, thickness + clasp_screw_shaft_radius, thickness + clasp_screw_shaft_radius + thickness);
               }
         }
@@ -69,10 +69,10 @@ module mount(
           rotate([-90, 0, 0])
             cylinder(outer_radius, clasp_screw_shaft_radius, clasp_screw_shaft_radius);
         if (!has_arm)
-          translate([i * (inner_radius + thickness + clasp_screw_shaft_radius), outer_radius - thickness - clasp_screw_offset, depth/2])
+          translate([i * (inner_radius + thickness + clasp_screw_shaft_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
             rotate([270, 0, 0]) {
               translate([0, 0, thickness])
-                cylinder(clasp_screw_offset, clasp_screw_shaft_radius + thickness, clasp_screw_shaft_radius + thickness);
+                cylinder(clasp_screw_inset, clasp_screw_shaft_radius + thickness, clasp_screw_shaft_radius + thickness);
               cylinder(thickness, clasp_screw_shaft_radius, clasp_screw_shaft_radius + thickness);
             }
       }
