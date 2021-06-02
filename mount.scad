@@ -23,10 +23,6 @@ module mount(
     : 0;
 
   module tube_clasp(has_arm) {
-    // TODO: Currently the distance between screws is set based on the minor
-    // radius, but this means that the cutouts for the major radius leave less
-    // that one thickness worth of material.  Instead, distances would be set
-    // to the _major_ radius.
     clasp_screw_radius = has_arm
       ? clasp_screw_minor_radius
       : clasp_screw_major_radius;
@@ -59,11 +55,11 @@ module mount(
         translate([-outer_radius, 0, 0])
           cube([outer_radius*2, outer_radius, depth]);
         for (i = [-1,1]) {
-          translate([i*(thickness + inner_radius + clasp_screw_minor_radius), 0, depth/2])
+          translate([i*(thickness + inner_radius + clasp_screw_major_radius), 0, depth/2])
             rotate([270, 0, 0])
               cylinder(outer_radius, thickness + clasp_screw_major_radius, thickness + clasp_screw_major_radius);
           if (!has_arm)
-            translate([i*(thickness + inner_radius + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
+            translate([i*(thickness + inner_radius + clasp_screw_major_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
               rotate([270, 0, 0]) {
                 translate([0, 0, thickness])
                   cylinder(clasp_screw_inset, thickness + clasp_screw_radius + thickness, thickness + clasp_screw_radius + thickness);
@@ -74,11 +70,11 @@ module mount(
       translate([0, 0, -$tolerance/2])
         cylinder(depth + $tolerance, true_inner_radius, true_inner_radius);
       for (i = [-1,1]) {
-        translate([i * (inner_radius + thickness + clasp_screw_minor_radius), 0, depth/2])
+        translate([i * (inner_radius + thickness + clasp_screw_major_radius), 0, depth/2])
           rotate([-90, 0, 0])
             cylinder(outer_radius, clasp_screw_radius, clasp_screw_radius);
         if (!has_arm)
-          translate([i * (inner_radius + thickness + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
+          translate([i * (inner_radius + thickness + clasp_screw_major_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
             rotate([270, 0, 0]) {
               translate([0, 0, thickness])
                 cylinder(clasp_screw_inset, clasp_screw_radius + thickness, clasp_screw_radius + thickness);
