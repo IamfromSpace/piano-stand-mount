@@ -61,7 +61,7 @@ module mount(
         for (i = [-1,1]) {
           translate([i*(thickness + inner_radius + clasp_screw_minor_radius), 0, depth/2])
             rotate([270, 0, 0])
-              cylinder(outer_radius, thickness + clasp_screw_radius, thickness + clasp_screw_radius);
+              cylinder(outer_radius, thickness + clasp_screw_major_radius, thickness + clasp_screw_major_radius);
           if (!has_arm)
             translate([i*(thickness + inner_radius + clasp_screw_minor_radius), outer_radius - thickness - clasp_screw_inset, depth/2])
               rotate([270, 0, 0]) {
