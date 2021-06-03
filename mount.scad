@@ -12,6 +12,7 @@ module mount(
   clasp_screw_major_radius,
   clasp_screw_inset,
   slot_width,
+  slot_depth,
   rail_width,
   rail_depth,
   component = "ALL",
@@ -63,6 +64,7 @@ module mount(
 
         translate([-outer_radius, 0, 0])
           cube([outer_radius*2, outer_radius, depth]);
+
         for (i = [-1,1]) {
           translate([i*(thickness + inner_radius + clasp_screw_major_radius), 0, depth/2])
             rotate([270, 0, 0])
@@ -98,6 +100,21 @@ module mount(
     }
   }
 
+  module slot_spacer() {
+    difference() {
+      cylinder(slot_depth, (slot_width - $tolerance)/2, (slot_width - $tolerance)/2);
+      cylinder(slot_depth, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
+    }
+  }
+
+  if (component == "ALL")
+    translate([screw_distance, slot_depth + outer_radius + effective_explode, screw_offset + depth])
+      rotate([90, 0, 0])
+        slot_spacer();
+
+  if (component == "SLOT_SPACER")
+    slot_spacer();
+
   if (component == "ALL" || component == "TOP_TUBE")
     tube_clasp(true);
 
@@ -122,6 +139,7 @@ module sided_mount(
   clasp_screw_major_radius,
   clasp_screw_inset,
   slot_width,
+  slot_depth,
   rail_width,
   rail_depth,
   component = "LEFT",
@@ -130,6 +148,7 @@ module sided_mount(
   is_left =
     component == "LEFT_TOP_TUBE" ||
     component == "LEFT_BOTTOM_TUBE" ||
+    component == "LEFT_SLOT_SPACER" ||
     component == "LEFT";
 
   subcomponent =
@@ -138,8 +157,10 @@ module sided_mount(
     component == "LEFT_TOP_TUBE" || component == "RIGHT_TOP_TUBE"
       ?  "TOP_TUBE" :
     component == "LEFT_BOTTOM_TUBE" || component == "RIGHT_BOTTOM_TUBE"
-      ? "BOTTOM_TUBE"
-      : component;
+      ? "BOTTOM_TUBE" :
+    component == "LEFT_SLOT_SPACER" || component == "RIGHT_SLOT_SPACER"
+      ? "SLOT_SPACER" :
+    undef;
 
   mount(
     depth,
@@ -152,6 +173,7 @@ module sided_mount(
     clasp_screw_major_radius,
     clasp_screw_inset,
     slot_width,
+    slot_depth,
     rail_width,
     rail_depth,
     subcomponent,
@@ -168,6 +190,7 @@ sided_mount(
   2.55,
   5,
   22.25,
+  1.25,
   1.25,
   1.25,
   $fn=30,
