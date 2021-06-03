@@ -51,14 +51,9 @@ module mount(
           translate([screw_distance - outer_radius, 0, -$tolerance/2])
             cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
 
-          // Our cutout is at a 45deg so that we can still print flat.  We
-          // rotate a cube and d is the length of the side so that the cutout
-          // will be a half a tolerance away from the corner of the slot.
-          d = sqrt(2) * (rail_width + rail_depth) + $tolerance/2;
           for (i = [-1,1])
-            translate([screw_distance/2, i*(slot_width/2 + rail_width/2), 0])
-              rotate([45,0,0])
-                cube([screw_distance + $tolerance, d, d], center = true);
+            translate([0, i*(slot_width + rail_width + $tolerance)/2 - (rail_width + $tolerance)/2, 0])
+              cube([screw_distance + $tolerance, rail_width + $tolerance, rail_depth + $tolerance/2]);
 
         }
 
