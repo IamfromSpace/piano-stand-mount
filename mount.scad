@@ -11,6 +11,9 @@ module mount(
   clasp_screw_minor_radius,
   clasp_screw_major_radius,
   clasp_screw_inset,
+  slot_width,
+  rail_width,
+  rail_depth,
   component = "ALL",
   explode, // only valid when "ALL" is selected
 ) {
@@ -46,6 +49,16 @@ module mount(
           }
           translate([screw_distance - outer_radius, 0, -$tolerance/2])
             cylinder(2 * thickness + $tolerance, screw_radius + $tolerance/2, screw_radius + $tolerance/2);
+
+          // Our cutout is at a 45deg so that we can still print flat.  We
+          // rotate a cube and d is the length of the side so that the cutout
+          // will be a half a tolerance away from the corner of the slot.
+          d = sqrt(2) * (rail_width + rail_depth) + $tolerance/2;
+          for (i = [-1,1])
+            translate([screw_distance/2, i*(slot_width/2 + rail_width/2), 0])
+              rotate([45,0,0])
+                cube([screw_distance + $tolerance, d, d], center = true);
+
         }
 
         translate([-outer_radius, 0, 0])
@@ -108,6 +121,9 @@ module sided_mount(
   clasp_screw_minor_radius,
   clasp_screw_major_radius,
   clasp_screw_inset,
+  slot_width,
+  rail_width,
+  rail_depth,
   component = "LEFT",
   explode
 ) {
@@ -135,6 +151,9 @@ module sided_mount(
     clasp_screw_minor_radius,
     clasp_screw_major_radius,
     clasp_screw_inset,
+    slot_width,
+    rail_width,
+    rail_depth,
     subcomponent,
     explode
   );
@@ -148,6 +167,9 @@ sided_mount(
   2.2, // TODO: Ideally this is affected by $tolerance in a reliable way??
   2.55,
   5,
+  22.25,
+  1.25,
+  1.25,
   $fn=30,
   $tolerance=0.7
 );
