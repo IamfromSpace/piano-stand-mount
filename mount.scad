@@ -161,7 +161,7 @@ module sided_mount(
     depth,
     thickness,
     inner_radius,
-    is_left ? 96 : 45,
+    is_left ? 80 : 29,
     is_left ? 54 : 27.5,
     screw_radius,
     clasp_screw_minor_radius,
