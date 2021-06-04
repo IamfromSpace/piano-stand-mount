@@ -177,7 +177,7 @@ module sided_mount(
 }
 
 sided_mount(
-  25,
+  22,
   8/3,
   15,
   2.5,
